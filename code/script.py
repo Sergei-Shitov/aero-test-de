@@ -30,10 +30,20 @@ def elt_process(sourse_url:str, db_host:str, db_port:int, db_name:str, db_user:s
     data = json.loads(res.text)
 
     # разделяем данные для загрузки в таблицу
+    # информация о команде
     team = data['stats'][0]['splits'][0]['team']
-    game_type = {'statsSingleSeason_'+ k : v for k, v in data['stats'][0]['type']['gameType'].items()}
-    single_season = {'statsSingleSeason_'+ k : v for k, v in data['stats'][0]['splits'][0]['stat'].items()}
-    regular_season = {'regularSeasonStatRankings_'+ k : v for k, v in data['stats'][1]['splits'][0]['stat'].items()}
+    
+    # информация об игре
+    game = data['stats'][0]['type']['gameType']
+    game_type = {'statsSingleSeason_'+ k : v for k, v in game.items()}
+
+    # Информация с показателями по сезону
+    sin_seas_data = data['stats'][0]['splits'][0]['stat']
+    single_season = {'statsSingleSeason_'+ k : v for k, v in sin_seas_data.items()}
+
+    # Информация с местами
+    reg_seas_data = data['stats'][1]['splits'][0]['stat']
+    regular_season = {'regularSeasonStatRankings_'+ k : v for k, v in reg_seas_data.items()}
     
     time_stamp = {'timestamp':datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 

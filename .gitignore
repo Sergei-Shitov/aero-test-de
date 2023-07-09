@@ -1,0 +1,5 @@
+venv
+test_env/db
+test_env/airflow_db
+test_env/dags/__pycache__
+test_env/pg_admin_folder

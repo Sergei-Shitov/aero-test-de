@@ -11,8 +11,10 @@ from datetime import datetime
 from sqlalchemy.engine import create_engine as eng
 from sqlalchemy.exc import OperationalError
 
-def elt_process(sourse_url:str, db_host:str, db_port:int, db_name:str, db_user:str, db_password:str, db_schema:str) -> None:
+def elt_process(db_host:str, db_port:int, db_name:str, db_user:str, db_password:str, db_schema:str) -> None:
     '''Getting data from API and storing it to DB'''
+
+    sourse_url = 'https://statsapi.web.nhl.com/api/v1/teams/21/stats'
 
     # получаем данные
     try:
@@ -33,17 +35,17 @@ def elt_process(sourse_url:str, db_host:str, db_port:int, db_name:str, db_user:s
     # информация о команде
     team = data['stats'][0]['splits'][0]['team']
     
-    # информация об игре
+    # информация об игре statsSingleSeason = sss
     game = data['stats'][0]['type']['gameType']
-    game_type = {'statsSingleSeason_'+ k : v for k, v in game.items()}
+    game_type = {'sss_'+ k : v for k, v in game.items()}
 
-    # Информация с показателями по сезону
+    # Информация с показателями по сезону statsSingleSeason = sss
     sin_seas_data = data['stats'][0]['splits'][0]['stat']
-    single_season = {'statsSingleSeason_'+ k : v for k, v in sin_seas_data.items()}
+    single_season = {'sss_'+ k : v for k, v in sin_seas_data.items()}
 
-    # Информация с местами
+    # Информация с местами regularSeasonStatRankings = rssr
     reg_seas_data = data['stats'][1]['splits'][0]['stat']
-    regular_season = {'regularSeasonStatRankings_'+ k : v for k, v in reg_seas_data.items()}
+    regular_season = {'rssr_'+ k : v for k, v in reg_seas_data.items()}
     
     time_stamp = {'timestamp':datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
@@ -63,7 +65,8 @@ def elt_process(sourse_url:str, db_host:str, db_port:int, db_name:str, db_user:s
 
 
 if __name__ == '__main__':
-    sourse_url = 'https://statsapi.web.nhl.com/api/v1/teams/21/stats'
+
+    # задаем значения параметров для подключения БД
     db_host = 'localhost'
     db_port = 5432
     db_name = 'storage'
@@ -72,7 +75,7 @@ if __name__ == '__main__':
     db_schema = 'public'
 
     # получение параметров из переменных окружения
-    # sourse_url = os.getenv('API_URL')
+    #
     # db_host = os.getenv('DB_HOST')
     # db_port = os.getenv('DB_PORT', default=int)
     # db_name = os.getenv('DB_NAME')
@@ -80,4 +83,4 @@ if __name__ == '__main__':
     # db_password = os.getenv('DB_PASSWORD')
     # db_schema = os.getenv('DB_SCHEMA')
 
-    elt_process(sourse_url, db_host, db_port, db_name, db_user, db_password, db_schema)
+    elt_process(db_host, db_port, db_name, db_user, db_password, db_schema)

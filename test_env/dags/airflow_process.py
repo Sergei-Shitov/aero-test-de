@@ -41,7 +41,7 @@ def load_to_db(ti):
 
 with DAG(
     'airflow_process',
-    start_date = datetime(2023, 7, 9),
+    start_date = datetime(2023, 7, 10, 0, 0, 0), # изменить на необходимое время старта
     max_active_runs = 1,
     catchup = False,
     description = 'get canabis info',

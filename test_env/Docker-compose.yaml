@@ -13,6 +13,9 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-U", "${DB_USER}"]
 
+# Для запуска ТОЛЬКО БД и pgAdmin
+# закомментить со строки ниже
+
   airflow:
     build: ./airflow_container
     volumes: 
@@ -23,6 +26,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+# до этой строки
 
   pgadmin:
     image: dpage/pgadmin4:latest
